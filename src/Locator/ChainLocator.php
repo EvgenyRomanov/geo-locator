@@ -4,8 +4,14 @@ declare(strict_types=1);
 
 namespace App\Locator;
 
+/**
+ * Локатор, представляющий собой цепочку локаторов.
+ * В данном случае представлен вариант, при котором цепочка локаторов вызывается до тех пор, пока
+ * не будет получен ответ отличный от null.
+ */
 final readonly class ChainLocator implements Locator
 {
+    /** @var Locator[]  */
     private array $locators;
 
     public function __construct(Locator ...$locators)
@@ -15,13 +21,10 @@ final readonly class ChainLocator implements Locator
 
     public function locate(Ip $ip): ?Location
     {
-        /** @psalm-suppress MixedAssignment */
         foreach ($this->locators as $locator) {
-            /** @psalm-suppress MixedMethodCall */
             $location = $locator->locate($ip);
 
             if ($location !== null) {
-                /** @psalm-suppress MixedReturnStatement */
                 return $location;
             }
         }

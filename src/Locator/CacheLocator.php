@@ -7,6 +7,9 @@ namespace App\Locator;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 
+/**
+ * Локатор, сохраняющий ответы в кэш.
+ */
 final readonly class CacheLocator implements Locator
 {
     public function __construct(
@@ -18,12 +21,11 @@ final readonly class CacheLocator implements Locator
 
     /**
      * @throws InvalidArgumentException
-     * @psalm-suppress PossiblyUnusedReturnValue
      */
     public function locate(Ip $ip): ?Location
     {
         $key = "location-{$this->prefix}" . $ip->getValue();
-        /** @psalm-suppress MixedAssignment */
+        /** @var Location|null $location */
         $location = $this->cache->get($key);
 
         if ($location === null) {
@@ -31,7 +33,6 @@ final readonly class CacheLocator implements Locator
             $this->cache->set($key, $location, $this->ttl);
         }
 
-        /** @psalm-suppress MixedReturnStatement */
         return $location;
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+/** @psalm-suppress MissingFile */
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\RsrErrorHandler;
@@ -12,38 +13,43 @@ use App\Locator\MuteLocator;
 use App\Logger;
 
 
-$apiKey = "12345";
+$apiKey = "fbba5f1967f04cc2a44b0f24dd341d35";
 $ip = new Ip("8.8.8.8");
-$handler = new RsrErrorHandler(new Logger());
-$client = new HttpClient();
+$customLogger = new Logger();
+$errorHandler = new RsrErrorHandler($customLogger);
+$customHttpClient =  new \GuzzleHttp\Client();
 $cache = new SimpleArrayCache();
-
 
 # ------------ Example 1 ------------ #
 $locator = new \App\Locator\ChainLocator(
     new MuteLocator(
-        new IpGeoLocationLocator($client, $apiKey),
-        $handler
+        new IpGeoLocationLocator($customHttpClient, $apiKey),
+        $errorHandler
     ),
     new MuteLocator(
-        new IpInfoLocator($client, $apiKey),
-        $handler
+        new IpInfoLocator($customHttpClient, $apiKey),
+        $errorHandler
     )
 );
 /** @psalm-suppress ForbiddenCode */
 var_dump($locator->locate($ip));
 
 
+$guzzleHttpClient =  new HttpClient();
+$monologLogger = new \Monolog\Logger('test_name');
+$monologLogger->pushHandler(new \Monolog\Handler\StreamHandler("php://stdout", \Monolog\Level::Debug));
+$errorHandler = new RsrErrorHandler($monologLogger);
+
 # ------------ Example 2 ------------ #
 $locator = new \App\Locator\CacheLocator(
     new \App\Locator\ChainLocator(
         new MuteLocator(
-            new IpGeoLocationLocator($client, $apiKey),
-            $handler
+            new IpGeoLocationLocator($guzzleHttpClient, $apiKey),
+            $errorHandler
         ),
         new MuteLocator(
-            new IpInfoLocator($client, $apiKey),
-            $handler
+            new IpInfoLocator($guzzleHttpClient, $apiKey),
+            $errorHandler
         )
     ),
     $cache,
@@ -58,8 +64,8 @@ var_dump($locator->locate($ip));
 $locator = new \App\Locator\ChainLocator(
     new \App\Locator\CacheLocator(
         new MuteLocator(
-            new IpGeoLocationLocator($client, $apiKey),
-            $handler
+            new IpGeoLocationLocator($guzzleHttpClient, $apiKey),
+            $errorHandler
         ),
         $cache,
         "prefix_1",
@@ -67,8 +73,8 @@ $locator = new \App\Locator\ChainLocator(
     ),
     new \App\Locator\CacheLocator(
         new MuteLocator(
-            new IpInfoLocator($client, $apiKey),
-            $handler
+            new IpInfoLocator($guzzleHttpClient, $apiKey),
+            $errorHandler
         ),
         $cache,
         "prefix_2",

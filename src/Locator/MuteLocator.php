@@ -7,6 +7,9 @@ namespace App\Locator;
 use App\RsrErrorHandler;
 use RuntimeException;
 
+/**
+ * Локатор, который подавляет ошибки, передавая их обработчику.
+ */
 final readonly class MuteLocator implements Locator
 {
     public function __construct(private Locator $next, private RsrErrorHandler $handler) {}

@@ -35,6 +35,7 @@ final readonly class Location
             $location .= ' - ' . $this->region;
         }
 
+
         if (! is_null($this->city)) {
             $location .= ' - ' . $this->city;
         }

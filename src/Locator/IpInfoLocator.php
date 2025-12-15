@@ -6,7 +6,10 @@ namespace App\Locator;
 
 use Psr\Http\Client\ClientInterface;
 
-/** @psalm-suppress UnusedProperty */
+/**
+ * Условный локатор (заглушка), который предоставляет информацию отличную от гео, например, информацию от сервиса whois.
+ * @psalm-suppress UnusedProperty
+ */
 final readonly class IpInfoLocator implements Locator
 {
     public function __construct(

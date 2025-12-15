@@ -22,7 +22,9 @@
         "psr/simple-cache": "^3.0",
         "psr/http-client": "^1.0",
         "psr/cache": "^3.0",
-        "slim/psr7": "^1.8"
+        "slim/psr7": "^1.8",
+        "guzzlehttp/guzzle": "^7.10",
+        "monolog/monolog": "^3.9"
     },
     "scripts": {
         "app": "php bin/app.php",

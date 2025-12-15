@@ -58,16 +58,7 @@ final class LocatorTest extends TestCase
     public function testNotFound(): void
     {
         $client = $this->createMock(ClientInterface::class);
-        /** @psalm-suppress PossiblyFalseArgument */
-        $client->method('sendRequest')->willReturn(new Response(body: (new StreamFactory())->createStream(
-            json_encode([
-                'location' => [
-                    'country_name' => '-',
-                    'state_prov' => '-',
-                    'city' => '-',
-                ],
-            ])
-        )));
+        $client->method('sendRequest')->willReturn(new Response(body: (new StreamFactory())->createStream()));
 
         $locator = new IpGeoLocationLocator($client, $this->apiKey);
         $location = $locator->locate(new Ip("127.0.0.1"));

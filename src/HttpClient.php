@@ -17,9 +17,8 @@ final readonly class HttpClient implements ClientInterface
     {
         $content = file_get_contents((string) $request->getUri());
         if ($content === false) {
-            /** @psalm-suppress PossiblyNullArgument */
-            /** @psalm-suppress PossiblyNullArrayAccess */
-            throw new RuntimeException(error_get_last()["message"]);
+            $lastErr = error_get_last();
+            throw new RuntimeException(is_null($lastErr) ? "" : $lastErr["message"]);
         }
 
         return (new ResponseFactory())->createResponse()->withBody(
